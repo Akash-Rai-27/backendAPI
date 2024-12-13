@@ -1,0 +1,22 @@
+# Node.js dependencies
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+
+# Environment Variables
+.env
+
+# Docker
+docker-compose.yml
+Dockerfile
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.sw?

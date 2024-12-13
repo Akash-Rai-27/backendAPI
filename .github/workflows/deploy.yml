@@ -1,0 +1,42 @@
+name: Deploy Backend API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker Image
+        run: docker build -t backend-api:latest .
+
+      - name: Copy Docker Image to VM
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "./"
+          target: "/home/${{ secrets.VM_USERNAME }}/backend-api"
+
+      - name: Deploy Docker Container on VM
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/${{ secrets.VM_USERNAME }}/backend-api
+            docker stop backend-api || true
+            docker rm backend-api || true
+            docker build -t backend-api:latest .
+            docker run -d -p 80:80 --name backend-api backend-api:latest
