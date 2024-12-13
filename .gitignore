@@ -8,9 +8,7 @@ package-lock.json
 # Environment Variables
 .env
 
-# Docker
-docker-compose.yml
-Dockerfile
+
 
 # Operating System Files
 .DS_Store
